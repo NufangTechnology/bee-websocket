@@ -1,0 +1,24 @@
+{
+    "name": "bee-framework/websocket",
+    "description": "Bee框架websocket组件",
+    "type": "library",
+    "require": {
+        "bee-framework/util": "^2.1",
+        "bee-framework/http": "dev-master"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "南山吴彦祖",
+            "email": "anoxia@engineer.com"
+        }
+    ],
+    "require-dev": {
+        "swoft/swoole-ide-helper": "^4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bee\\Websocket\\": "src/"
+        }
+    }
+}

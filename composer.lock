@@ -1,0 +1,212 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "23a15852e42711ffacabd79813bd819c",
+    "packages": [
+        {
+            "name": "adhocore/cli",
+            "version": "0.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adhocore/php-cli.git",
+                "reference": "11a741d4f5a3b05938fc29eb79bcfad2049cb5d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adhocore/php-cli/zipball/11a741d4f5a3b05938fc29eb79bcfad2049cb5d5",
+                "reference": "11a741d4f5a3b05938fc29eb79bcfad2049cb5d5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ahc\\Cli\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jitendra Adhikari",
+                    "email": "jiten.adhikary@gmail.com"
+                }
+            ],
+            "description": "Command line interface library for PHP",
+            "keywords": [
+                "PHP7",
+                "argument-parser",
+                "argv-parser",
+                "cli",
+                "cli-action",
+                "cli-app",
+                "cli-color",
+                "cli-option",
+                "cli-writer",
+                "command",
+                "console",
+                "console-app",
+                "php-cli",
+                "stream-input",
+                "stream-output"
+            ],
+            "time": "2019-03-09T06:43:34+00:00"
+        },
+        {
+            "name": "bee-framework/http",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NufangTechnology/bee-http.git",
+                "reference": "d607bde2c8238c5a990e61d32360630f2900fd94"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NufangTechnology/bee-http/zipball/d607bde2c8238c5a990e61d32360630f2900fd94",
+                "reference": "d607bde2c8238c5a990e61d32360630f2900fd94",
+                "shasum": ""
+            },
+            "require": {
+                "adhocore/cli": "^0.3.2",
+                "bee-framework/router": "^1.2",
+                "bee-framework/util": "^2.1",
+                "ext-json": "*",
+                "ext-pcntl": "*",
+                "ext-swoole": ">=4.2",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.4",
+                "swoft/swoole-ide-helper": "^4.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bee\\Http\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "南山吴彦祖",
+                    "email": "anoxia@engineer.com"
+                }
+            ],
+            "description": "Bee框架http组件",
+            "time": "2019-03-28T08:34:06+00:00"
+        },
+        {
+            "name": "bee-framework/router",
+            "version": "v1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NufangTechnology/bee-router.git",
+                "reference": "aa9c6cc919fa5a0952302d9c51f2d59a09beefba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NufangTechnology/bee-router/zipball/aa9c6cc919fa5a0952302d9c51f2d59a09beefba",
+                "reference": "aa9c6cc919fa5a0952302d9c51f2d59a09beefba",
+                "shasum": ""
+            },
+            "require": {
+                "bee-framework/util": "^2.1",
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bee\\Router\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "沸羊羊",
+                    "email": "anoxia@engineer.com"
+                }
+            ],
+            "description": "Bee框架路由组件",
+            "time": "2019-03-14T07:49:12+00:00"
+        },
+        {
+            "name": "bee-framework/util",
+            "version": "v2.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NufangTechnology/bee-util.git",
+                "reference": "79332bfca20f8ac1b1147490f1ce25b13d17dce8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NufangTechnology/bee-util/zipball/79332bfca20f8ac1b1147490f1ce25b13d17dce8",
+                "reference": "79332bfca20f8ac1b1147490f1ce25b13d17dce8",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bee\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Bee框架通用类库",
+            "time": "2019-03-05T09:30:57+00:00"
+        }
+    ],
+    "packages-dev": [
+        {
+            "name": "swoft/swoole-ide-helper",
+            "version": "v4.2.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swoft-cloud/swoole-ide-helper.git",
+                "reference": "912a2c5db04c859531d7e89a1a985bb63354fe8d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swoft-cloud/swoole-ide-helper/zipball/912a2c5db04c859531d7e89a1a985bb63354fe8d",
+                "reference": "912a2c5db04c859531d7e89a1a985bb63354fe8d",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "ide helper for Swoft and Swoole",
+            "keywords": [
+                "ide-helper",
+                "php",
+                "swoft",
+                "swoole"
+            ],
+            "time": "2019-01-06T11:09:21+00:00"
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "bee-framework/http": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
