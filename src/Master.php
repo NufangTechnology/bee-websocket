@@ -97,17 +97,25 @@ class Master extends Server
      */
     public function onTask($server, Task $task)
     {
+        $map = [];
+
         // 将相同自节点用户合并，减少消息通信量
         foreach ($task->data['c'] as $uuid) {
+            // 获取连接信息
             $target = $this->connection->get($uuid);
 
+            // 检查子节点连接是否有效
+            // 无效则从对象池删除，降低内存使用
+            // 当心用户连接进来时会自动重新注册
             if ($server->exist($target['node_fd'])) {
-                print_r($target);
-                $server->push(
-                    $target['node_fd'],
-                    serialize(['f' => $target['fd'], 'd' => $task->data['d']])
-                );
+                $map[$target['node_fd']][] = $target['fd'];
+            } else {
+                $this->connection->del($uuid);
             }
+        }
+
+        foreach ($map as $nodeFd => $fds) {
+            $server->push($nodeFd, serialize(['f' => $fds, 'd' => $task->data['d']]));
         }
     }
 }

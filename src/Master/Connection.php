@@ -3,17 +3,17 @@ namespace Bee\Websocket\Master;
 
 use Swoole\Table;
 
+/**
+ * 客户端连接池
+ *
+ * @package Bee\Websocket\Master
+ */
 class Connection
 {
     /**
      * @var Table
      */
     protected $table;
-
-    /**
-     * @var Slave
-     */
-    protected $slave;
 
     /**
      * Connection constructor.
@@ -24,8 +24,6 @@ class Connection
         $this->table->column('fd', Table::TYPE_INT);
         $this->table->column('node_fd', Table::TYPE_INT);
         $this->table->create();
-
-        $this->slave = new Slave;
     }
 
     /**
@@ -39,13 +37,27 @@ class Connection
         foreach ($targets as $uuid => $item) {
             $this->table->set($uuid, ['fd' => $item, 'node_fd' => $nodeFd]);
         }
-
-        var_dump($this->table->getMemorySize());
-        var_dump($this->table->count());
     }
 
-    public function get($uuid)
+    /**
+     * 获取指定数据
+     *
+     * @param string $uuid
+     * @return mixed
+     */
+    public function get(string $uuid)
     {
         return $this->table->get($uuid);
+    }
+
+    /**
+     * 删除指定数据
+     *
+     * @param string $uuid
+     * @return mixed
+     */
+    public function del(string $uuid)
+    {
+        return $this->table->del($uuid);
     }
 }
