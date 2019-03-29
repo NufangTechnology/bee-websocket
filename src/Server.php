@@ -2,7 +2,6 @@
 namespace Bee\Websocket;
 
 use Bee\Http\Server as HttpServer;
-use Bee\Websocket\Slave\Master;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 
@@ -13,36 +12,6 @@ use Swoole\Http\Response;
  */
 abstract class Server extends HttpServer implements ServerInterface
 {
-    /**
-     * 是否为从节点
-     *
-     * @var bool
-     */
-    protected $isSlave = false;
-
-    /**
-     * @var Master
-     */
-    protected $master;
-
-    public function __construct(array $runtime)
-    {
-        parent::__construct($runtime);
-
-        if (isset($runtime['master'])) {
-            $this->isSlave = true;
-
-            $config = $runtime['master'];
-            $this->master = new Master($config['host'], $config['port']);
-        }
-    }
-
-    public function setMasterConfig($params)
-    {
-        $this->isSlave = true;
-        $this->master  = $params;
-    }
-
     /**
      * 服务启动
      */
@@ -60,6 +29,21 @@ abstract class Server extends HttpServer implements ServerInterface
         $this->swoole->set($this->option);
         $this->registerCallback();
         $this->swoole->start();
+    }
+
+    /**
+     * 进程启动
+     *
+     * @param $server
+     * @param $workerId
+     */
+    public function onWorkerStart($server, $workerId)
+    {
+        if ($server->taskworker) {
+            swoole_set_process_name($this->name . ':task');
+        } else {
+            swoole_set_process_name($this->name . ':worker');
+        }
     }
 
     /**
