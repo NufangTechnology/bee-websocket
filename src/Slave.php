@@ -49,7 +49,9 @@ abstract class Slave extends Server
      */
     public function onTask($server, Task $task)
     {
-        $server->push($task->data['f'], $task->data['d']);
+        foreach ($task->data['f'] as $fd) {
+            $server->push($fd, $task->data['d']);
+        }
     }
 
     /**
