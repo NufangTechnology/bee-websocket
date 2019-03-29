@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "bee-framework/util": "^2.1",
-        "bee-framework/http": "dev-master"
+        "bee-framework/http": "^1.2"
     },
     "license": "MIT",
     "authors": [
