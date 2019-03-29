@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "23a15852e42711ffacabd79813bd819c",
+    "content-hash": "1ee16498b464f6edd66d30c572cb9c18",
     "packages": [
         {
             "name": "adhocore/cli",
@@ -64,7 +64,7 @@
         },
         {
             "name": "bee-framework/http",
-            "version": "dev-master",
+            "version": "v1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/NufangTechnology/bee-http.git",
@@ -202,9 +202,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "bee-framework/http": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
