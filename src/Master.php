@@ -45,7 +45,6 @@ class Master extends Server
      */
     public function onOpen($server, $request)
     {
-        $server->push($request->fd, 'ok');
     }
 
     /**

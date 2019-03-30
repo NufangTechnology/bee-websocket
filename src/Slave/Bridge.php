@@ -58,7 +58,6 @@ class Bridge
             call_user_func($this->callback, unserialize($frame->data));
         });
         $this->client->upgrade('/', function ($cli) {
-            var_dump('/', $cli->body);
         });
     }
 
@@ -69,7 +68,7 @@ class Bridge
      */
     public function send(array $data)
     {
-        if (!$this->client->isConnected()) {
+        if (!$this->client) {
             $this->connect();
         }
 
