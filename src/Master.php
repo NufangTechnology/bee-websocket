@@ -45,7 +45,7 @@ class Master extends Server
      */
     public function onOpen($server, $request)
     {
-        $server->push($request->fd, 'master: ok');
+        $server->push($request->fd, 'ok');
     }
 
     /**
@@ -100,7 +100,7 @@ class Master extends Server
         $map = [];
 
         // 将相同自节点用户合并，减少消息通信量
-        foreach ($task->data['c'] as $uuid) {
+        foreach ($task->data['u'] as $uuid) {
             // 获取连接信息
             $target = $this->connection->get($uuid);
 
