@@ -2,6 +2,7 @@
 namespace Bee\Websocket;
 
 use Bee\Websocket\Slave\Message;
+use Bee\Websocket\Task\PushMessage;
 use Swoole\Server\Task;
 use Swoole\WebSocket\Frame;
 use Bee\Websocket\Slave\Bridge;
@@ -85,9 +86,15 @@ abstract class Slave extends Server
      */
     public function onTask($server, Task $task)
     {
-        foreach ($task->data['f'] as $fd) {
-            $server->push($fd, $task->data['d']);
-        }
+        //任务的数据
+        $params = $task->data;
+        // 获取参数
+        $class  = $params['class'];
+        $method = 'handle';
+        $data   = $params['data'];
+
+        // 调起应任务
+        (new $class)->{$method}($server, $data);
     }
 
     /**
@@ -97,6 +104,14 @@ abstract class Slave extends Server
      */
     public function notify($data)
     {
-        $this->swoole->task($data);
+        $this->swoole->task(
+            [
+                'class' => PushMessage::class,
+                'data'  => [
+                    'fds'  => $data['f'],
+                    'data' => $data['d']
+                ]
+            ]
+        );
     }
 }
