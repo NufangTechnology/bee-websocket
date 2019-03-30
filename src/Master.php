@@ -64,11 +64,11 @@ class Master extends Server
         $data = unserialize($frame->data);
 
         switch ($data['a']) {
-            case 'register': // 客户端注册
+            case 100: // 客户端注册
                 $this->connection->register($data['c'], $frame->fd);
                 break;
 
-            case 'broadcast': // 广播
+            case 101: // 广播
                 // 通过 uuid 获取其所在的从节点 fd 和连接对象 fd
                 $server->task($data);
                 break;

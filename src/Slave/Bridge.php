@@ -85,7 +85,7 @@ class Bridge
     {
         $this->send(
             [
-                'a' => 'register',
+                'a' => 100,
                 'c' => $fds,
             ]
         );
@@ -101,7 +101,7 @@ class Bridge
     {
         $this->send(
             [
-                'a' => 'broadcast',
+                'a' => 101,
                 'c' => $target,
                 'd' => $data,
             ]
