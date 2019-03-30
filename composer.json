@@ -3,8 +3,10 @@
     "description": "Bee框架websocket组件",
     "type": "library",
     "require": {
+        "ext-json": "*",
         "bee-framework/util": "^2.1",
-        "bee-framework/http": "^1.2"
+        "bee-framework/http": "^1.2",
+        "bee-framework/router": "^1.2"
     },
     "license": "MIT",
     "authors": [
