@@ -102,7 +102,7 @@ class Bridge
         $this->send(
             [
                 'a' => 101,
-                'c' => $target,
+                'u' => $target,
                 'd' => $data,
             ]
         );
