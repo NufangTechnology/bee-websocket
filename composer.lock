@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d190f0322e8d49fdaf5864664720344d",
+    "content-hash": "4f3531c26fb33b2d7cc27b0fda965d73",
     "packages": [
         {
             "name": "adhocore/cli",

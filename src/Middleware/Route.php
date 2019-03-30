@@ -2,7 +2,7 @@
 namespace Bee\Websocket\Middleware;
 
 use Bee\Websocket\Exception;
-use Bee\WebSocket\Middleware;
+use Bee\Websocket\Middleware;
 use Bee\Websocket\Application;
 use Bee\Websocket\Context;
 use Bee\Websocket\RouteDispatch;

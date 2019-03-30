@@ -1,5 +1,5 @@
 <?php
-namespace Bee\WebSocket;
+namespace Bee\Websocket;
 
 /**
  * Middleware
