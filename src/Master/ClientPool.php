@@ -41,9 +41,6 @@ class ClientPool
         foreach ($targets as $uuid => $fd) {
             $this->table->set($uuid, ['fd' => $fd, 'slave' => $slave]);
         }
-
-        var_dump($this->table->getMemorySize());
-        var_dump($this->table->count());
     }
 
     /**
