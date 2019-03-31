@@ -69,6 +69,14 @@ abstract class Slave extends Server
         }
     }
 
+    /**
+     * 客户端打开连接时回调方法
+     *  - 连接检查/身份鉴权
+     *
+     * @param \Swoole\WebSocket\Server $server
+     * @param \Swoole\Http\Request $request
+     * @return mixed|void
+     */
     public function onOpen($server, $request)
     {
         // 初始化上下文，构造身份鉴别请求参数
