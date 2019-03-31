@@ -2,8 +2,8 @@
 namespace Bee\Websocket;
 
 use Bee\Websocket\Middleware\Route;
-use Bee\Websocket\Task\RegisterClientConnect;
 use Bee\Websocket\Task\RequestBroadcast;
+use Bee\Websocket\Task\SendClientConnect;
 
 /**
  * 应用处理实例
@@ -129,7 +129,7 @@ class Application
     {
         $this->server->task(
             [
-                'class' => RegisterClientConnect::class,
+                'class' => SendClientConnect::class,
                 'data'  => $data,
             ]
         );

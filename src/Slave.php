@@ -2,7 +2,7 @@
 namespace Bee\Websocket;
 
 use Bee\Websocket\Task\PushMessage;
-use Bee\Websocket\Task\RegisterClientConnect;
+use Bee\Websocket\Task\SendClientConnect;
 use Swoole\Server\Task;
 use Swoole\WebSocket\Frame;
 use Bee\Websocket\Slave\Bridge;
@@ -88,7 +88,7 @@ abstract class Slave extends Server
         $data   = $params['data'];
 
         // 调起应任务
-        (new $class)->{$method}($server, $data);
+        (new $class)->{$method}($server, $this->bridge, $data);
     }
 
     /**
@@ -98,12 +98,7 @@ abstract class Slave extends Server
      */
     public function masterNotify($data)
     {
-        $this->swoole->task(
-            [
-                'class' => PushMessage::class,
-                'data' => $data
-            ]
-        );
+        (new PushMessage)->handle($this->swoole, $this->bridge, $data);
     }
 
     /**
@@ -115,7 +110,7 @@ abstract class Slave extends Server
     {
         $this->swoole->task(
             [
-                'class' => RegisterClientConnect::class,
+                'class' => SendClientConnect::class,
                 'data'  => $data
             ]
         );

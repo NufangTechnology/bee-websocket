@@ -127,7 +127,7 @@ class Bridge
      */
     public function send(array $data)
     {
-        if (!$this->client->connected) {
+        if (!$this->client->isConnected()) {
             $this->reconnect();
         }
 
@@ -140,7 +140,7 @@ class Bridge
      * @param array $fds 连接对象集[uuid => fd]
      * @throws Exception
      */
-    public function registerConnect(array $fds)
+    public function register(array $fds)
     {
         $this->send(
             [
