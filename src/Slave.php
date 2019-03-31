@@ -69,6 +69,36 @@ abstract class Slave extends Server
         }
     }
 
+    public function onOpen($server, $request)
+    {
+        // 初始化上下文，构造身份鉴别请求参数
+        $context = new Context(
+            $request->fd,
+            [
+                'c' => '1,0', // 1,1 默认为身份鉴定路由地址（从0开始会路由转换异常）
+                'd' => $request->header['x-token'] ?? ''
+            ]
+        );
+
+        // 执行业务处理
+        (new Application)
+            ->setContext($context)
+            ->handle()
+        ;
+
+        // 获取设备(用户)唯一标识
+        $uuid = $context->get('uuid');
+        // 身份识别失败
+        // 关闭连接，节省连接，防止恶意占用连接
+        if (empty($uuid)) {
+            $server->push($request->fd, 'unauthorized');
+            $server->close($request->fd);
+        }
+
+        // 注册当前连接至至主节点
+        $this->registerClientConnect([$uuid => $request->fd]);
+    }
+
     /**
      * 客户端消息接收时回调方法
      *  $frame->data = [
@@ -82,7 +112,7 @@ abstract class Slave extends Server
     public function onMessage($server, Frame $frame)
     {
         // 客户端请求数据格式强制为 json
-        $data = json_decode($frame->data, true);
+        $data    = json_decode($frame->data, true);
 
         // 初始化上下文，注入客户端数据
         $context = new Context($frame->fd, $data);
@@ -94,12 +124,14 @@ abstract class Slave extends Server
         ;
 
         // 投递请求异步发送消息
-        $server->task(
-            [
-                'class' => RequestBroadcast::class,
-                'data'  => $context->getMessages()
-            ]
-        );
+        if ($context->getMessageLength()) {
+            $server->task(
+                [
+                    'class' => RequestBroadcast::class,
+                    'data'  => $context->getMessages()
+                ]
+            );
+        }
     }
 
     /**

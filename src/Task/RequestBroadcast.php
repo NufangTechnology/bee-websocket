@@ -23,7 +23,7 @@ class RequestBroadcast extends SlaveTask
     public function handle(Server $server, Bridge $bridge, array $params = [])
     {
         foreach ($params as $param) {
-            $bridge->broadcast($param['uuid'], $param['data']);
+            $bridge->broadcast($param['u'], $param['d']);
         }
     }
 }

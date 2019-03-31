@@ -67,7 +67,7 @@ class Context
      */
     public function message(array $uuid, $data): void
     {
-        $this->messages[] = ['uuid' => $uuid, 'data' => $data];
+        $this->messages[] = ['u' => $uuid, 'd' => $data];
     }
 
     /**
@@ -76,5 +76,13 @@ class Context
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMessageLength(): int
+    {
+        return count($this->messages);
     }
 }
