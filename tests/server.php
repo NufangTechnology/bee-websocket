@@ -10,15 +10,39 @@ class Slave extends \Bee\Websocket\Slave
     }
 }
 
+class Demo
+{
+    /**
+     * @var \Bee\Websocket\Application
+     */
+    protected $app;
+    public function setApp($app)
+    {
+        $this->app = $app;
+    }
+
+    public function __call($name, $arguments)
+    {
+    }
+
+    public function say()
+    {
+
+    }
+}
+
 if ($argv[1] == 'master') {
     try {
-        $server = new Master(require __DIR__ . '/config.php');
+        $server = new \Bee\Websocket\Master(require __DIR__ . '/config.php');
     } catch (\Bee\Websocket\Exception $e) {
         print_r($e->getMessage());
     }
 } else {
     try {
-        $server = new Slave(require __DIR__ . '/config.php', []);
+        $rule['demo'] = new \Bee\Router\Collection(Demo::class, '/1');
+        $rule['demo']->get('/1', 'say');
+
+        $server = new Slave(require __DIR__ . '/config.php', $rule);
     } catch (\Bee\Websocket\Exception $e) {
         print_r($e->getMessage());
     }

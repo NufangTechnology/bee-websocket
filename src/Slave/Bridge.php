@@ -127,7 +127,7 @@ class Bridge
      */
     public function send(array $data)
     {
-        if (!$this->client->isConnected()) {
+        if (!$this->client->connected) {
             $this->reconnect();
         }
 

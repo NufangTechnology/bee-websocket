@@ -2,6 +2,7 @@
 namespace Bee\Websocket;
 
 use Bee\Websocket\Middleware\Route;
+use Bee\Websocket\Task\RegisterClientConnect;
 use Bee\Websocket\Task\RequestBroadcast;
 
 /**
@@ -115,6 +116,21 @@ class Application
             [
                 'class' => RequestBroadcast::class,
                 'data'  => $this->context->getMessages()
+            ]
+        );
+    }
+
+    /**
+     * 注册客户端连接
+     *
+     * @param $data
+     */
+    public function registerClientConnect($data)
+    {
+        $this->server->task(
+            [
+                'class' => RegisterClientConnect::class,
+                'data'  => $data,
             ]
         );
     }

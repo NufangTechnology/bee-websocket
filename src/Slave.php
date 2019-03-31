@@ -2,6 +2,7 @@
 namespace Bee\Websocket;
 
 use Bee\Websocket\Task\PushMessage;
+use Bee\Websocket\Task\RegisterClientConnect;
 use Swoole\Server\Task;
 use Swoole\WebSocket\Frame;
 use Bee\Websocket\Slave\Bridge;
@@ -101,6 +102,21 @@ abstract class Slave extends Server
             [
                 'class' => PushMessage::class,
                 'data' => $data
+            ]
+        );
+    }
+
+    /**
+     * 注册客户端连接
+     *
+     * @param array $data
+     */
+    public function registerClientConnect($data)
+    {
+        $this->swoole->task(
+            [
+                'class' => RegisterClientConnect::class,
+                'data'  => $data
             ]
         );
     }
