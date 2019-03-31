@@ -23,18 +23,10 @@ class Application
     protected $context;
 
     /**
-     * @var \Swoole\WebSocket\Server
-     */
-    protected $server;
-
-    /**
      * Application constructor.
-     * @param \Swoole\WebSocket\Server $server
      */
-    public function __construct($server)
+    public function __construct()
     {
-        $this->server = $server;
-
         // 注册路由中间件
         $this->use(new Route);
     }
@@ -110,28 +102,5 @@ class Application
                 break;
             }
         }
-
-        // 投递请求异步发送消息
-        $this->server->task(
-            [
-                'class' => RequestBroadcast::class,
-                'data'  => $this->context->getMessages()
-            ]
-        );
-    }
-
-    /**
-     * 注册客户端连接
-     *
-     * @param $data
-     */
-    public function registerClientConnect($data)
-    {
-        $this->server->task(
-            [
-                'class' => SendClientConnect::class,
-                'data'  => $data,
-            ]
-        );
     }
 }
