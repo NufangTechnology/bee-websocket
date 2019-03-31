@@ -1,10 +1,27 @@
 <?php
 require dirname(__DIR__) . '/vendor/autoload.php';
 
+define('SLAVE_ID', time());
+
+class Slave extends \Bee\Websocket\Slave
+{
+    public function onClose($server, $fd)
+    {
+    }
+}
+
 if ($argv[1] == 'master') {
-    $server = new \Bee\Websocket\Master(require __DIR__ . '/config.php');
+    try {
+        $server = new Master(require __DIR__ . '/config.php');
+    } catch (\Bee\Websocket\Exception $e) {
+        print_r($e->getMessage());
+    }
 } else {
-    $server = new \Bee\Websocket\Slave(require __DIR__ . '/config.php');
+    try {
+        $server = new Slave(require __DIR__ . '/config.php', []);
+    } catch (\Bee\Websocket\Exception $e) {
+        print_r($e->getMessage());
+    }
 }
 
 $server->start();

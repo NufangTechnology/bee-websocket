@@ -1,6 +1,10 @@
 <?php
 namespace Bee\Websocket\Slave;
 
+use Bee\Websocket\Exception;
+use Swoole\Coroutine;
+use Swoole\Coroutine\Client;
+
 /**
  * 从节点与主节点通信连接服务
  *
@@ -29,7 +33,7 @@ class Bridge
     protected $heartbeat;
 
     /**
-     * @var \swoole_http_client
+     * @var Client
      */
     protected $client;
 
@@ -50,42 +54,99 @@ class Bridge
 
     /**
      * 连接主节点
+     *
+     * @throws Exception
      */
     public function connect()
     {
-        $this->client = new \swoole_http_client($this->host, $this->port);
-        $this->client->on('message', function ($cli, $frame) {
-            call_user_func($this->callback, unserialize($frame->data));
-        });
-        $this->client->upgrade('/', function ($cli) {
-        });
+        $this->client = new Client(SWOOLE_SOCK_TCP);
+        $this->client->connect($this->host, $this->port);
+
+        if (!$this->client->isConnected()) {
+            throw new Exception("Connect to '{$this->host}:{$this->port}' failed!", $this->client->errCode);
+        }
+    }
+
+    /**
+     * 尝试断线重连
+     *
+     * @param int $tryNum
+     * @return true
+     * @throws Exception
+     */
+    public function reconnect($tryNum = 0)
+    {
+        try {
+            $this->connect();
+
+            return true;
+        } catch (Exception $e) {
+
+            // 断线重连最多尝试10次
+            if ($tryNum > 10) {
+                throw $e;
+            }
+
+            // 记录 notice
+            trigger_error($e->getMessage());
+        }
+
+        // 当前协程进入睡眠
+        // 每次睡眠时间等于重试次数(即每次沉睡时间延长一秒，10次最多为55秒)：1 + 2 + 3...
+        Coroutine::sleep($tryNum);
+
+        // 重新尝试连接
+        $this->reconnect(++$tryNum);
+    }
+
+    /**
+     * 接收主节点数据
+     *
+     * @throws Exception
+     */
+    public function receive()
+    {
+        while (true) {
+            $data = $this->client->recv();
+
+            // 接收到的主节点数据为空，检查是否连接断开
+            // 如果连接断开进行自动重连
+            if (empty($data) && !$this->client->isConnected()) {
+                $this->reconnect();
+            } else {
+                call_user_func($this->callback, unserialize($data));
+            }
+        }
     }
 
     /**
      * 向主节点发送消息
      *
-     * @param $data
+     * @param array $data
+     * @throws Exception
      */
     public function send(array $data)
     {
-        if (!$this->client) {
-            $this->connect();
+        if (!$this->client->isConnected()) {
+            $this->reconnect();
         }
 
-        $this->client->push(serialize($data));
+        $this->client->send(serialize($data));
     }
 
     /**
      * 连客户端连接信息注册至主节点
      *
      * @param array $fds 连接对象集[uuid => fd]
+     * @throws Exception
      */
     public function registerConnect(array $fds)
     {
         $this->send(
             [
-                'a' => 100,
-                'c' => $fds,
+                'a' => SLAVE_ID,
+                'c' => 101,
+                'u' => $fds,
             ]
         );
     }
@@ -95,12 +156,14 @@ class Bridge
      *
      * @param array $target 连接对象集[uuid]
      * @param string $data 带广播数据体
+     * @throws Exception
      */
     public function broadcast(array $target, string $data)
     {
         $this->send(
             [
-                'a' => 101,
+                'a' => SLAVE_ID,
+                'c' => 102,
                 'u' => $target,
                 'd' => $data,
             ]

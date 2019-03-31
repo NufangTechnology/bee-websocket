@@ -4,6 +4,7 @@ namespace Bee\Websocket;
 use Bee\Http\Server as HttpServer;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
+use Swoole\WebSocket\Frame;
 
 /**
  * Websocket Server
@@ -56,5 +57,28 @@ abstract class Server extends HttpServer implements ServerInterface
     public function onRequest(Request $request, Response $response)
     {
         $response->end('ok');
+    }
+
+    /**
+     * 客户端打开连接时回调方法
+     *  - 检查进来的连接是否合法
+     *
+     * @param \Swoole\WebSocket\Server $server
+     * @param Request $request
+     */
+    public function onOpen($server, $request)
+    {
+        $server->push($request->fd, 'ok');
+    }
+
+    /**
+     * 客户端消息接收时回调方法
+     *
+     * @param \Swoole\WebSocket\Server $server
+     * @param $frame
+     */
+    public function onMessage($server, Frame $frame)
+    {
+        $server->push($frame->fd, 'ok');
     }
 }

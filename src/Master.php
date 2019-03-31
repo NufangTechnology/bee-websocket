@@ -1,10 +1,11 @@
 <?php
 namespace Bee\Websocket;
 
-use Swoole\Http\Request;
+use Bee\Websocket\Master\ClientPool;
+use Bee\Websocket\Master\SlavePool;
+use Bee\Websocket\Task\RegisterClientConnect;
+use Bee\Websocket\Task\SendBroadcast;
 use Swoole\Server\Task;
-use Swoole\WebSocket\Frame;
-use Bee\Websocket\Master\Connection;
 
 /**
  * 主节点服务
@@ -14,9 +15,14 @@ use Bee\Websocket\Master\Connection;
 class Master extends Server
 {
     /**
-     * @var Connection
+     * @var ClientPool
      */
-    protected $connection;
+    protected $clientPool;
+
+    /**
+     * @var SlavePool
+     */
+    protected $slavePool;
 
     /**
      * Bridge constructor.
@@ -33,18 +39,27 @@ class Master extends Server
         // 传入服务启用配置进行示例化
         parent::__construct($runtime['master']);
 
-        $this->connection = new Connection;
+        $this->clientPool = new ClientPool;
+        $this->slavePool  = new SlavePool;
     }
 
     /**
-     * 客户端打开连接时回调方法
-     *  - 检查进来的连接是否合法
-     *
-     * @param \Swoole\WebSocket\Server $server
-     * @param Request $request
+     * 启动服务
      */
-    public function onOpen($server, $request)
+    public function start()
     {
+        if ($this->isRunning()) {
+            $this->output->warn("无效操作，服务已经在[{$this->host}:{$this->port}]运行！");
+            return;
+        }
+
+        // 设置进程名称
+        swoole_set_process_name($this->name . ':master');
+        // 启动Http服务
+        $this->swoole = new \Swoole\Server($this->host, $this->port);
+        $this->swoole->set($this->option);
+        $this->registerCallback();
+        $this->swoole->start();
     }
 
     /**
@@ -56,24 +71,40 @@ class Master extends Server
      *  ]
      *
      * @param \Swoole\WebSocket\Server $server
-     * @param Frame $frame
+     * @param int $fd
+     * @param int $reactorId
+     * @param string $data
      */
-    public function onMessage($server, Frame $frame)
+    public function onReceive($server, $fd, $reactorId, $data)
     {
-        $data = unserialize($frame->data);
+        $data = unserialize($data);
 
-        switch ($data['a']) {
-            case 100: // 客户端注册
-                $this->connection->register($data['c'], $frame->fd);
+        // 替换子节点连接对象映射
+        // 保证每次主节点向子节点发送消息时使用最后一次通信的连接
+        $this->slavePool->set($data['a'], $fd);
+
+        // 执行子节点请求业务
+        switch ($data['c']) {
+            case 101: // 客户端连接注册
+                $server->task(
+                    [
+                        'class' => RegisterClientConnect::class,
+                        'data'  => $data,
+                    ]
+                );
                 break;
 
-            case 101: // 广播
-                // 通过 uuid 获取其所在的从节点 fd 和连接对象 fd
-                $server->task($data);
+            case 102: // 发起发送广播指令
+                $server->task(
+                    [
+                        'class' => SendBroadcast::class,
+                        'data'  => $data,
+                    ]
+                );
                 break;
 
             default:
-                trigger_error('动作"' . $data['a'] . '"不被支持');
+                trigger_error("Action '{$data['c']}' not support");
         }
     }
 
@@ -96,25 +127,14 @@ class Master extends Server
      */
     public function onTask($server, Task $task)
     {
-        $map = [];
+        //任务的数据
+        $params = $task->data;
+        // 获取参数
+        $class  = $params['class'];
+        $method = 'handle';
+        $data   = $params['data'];
 
-        // 将相同自节点用户合并，减少消息通信量
-        foreach ($task->data['u'] as $uuid) {
-            // 获取连接信息
-            $target = $this->connection->get($uuid);
-
-            // 检查子节点连接是否有效
-            // 无效则从对象池删除，降低内存使用
-            // 当心用户连接进来时会自动重新注册
-            if ($server->exist($target['node_fd'])) {
-                $map[$target['node_fd']][] = $target['fd'];
-            } else {
-                $this->connection->del($uuid);
-            }
-        }
-
-        foreach ($map as $nodeFd => $fds) {
-            $server->push($nodeFd, serialize(['f' => $fds, 'd' => $task->data['d']]));
-        }
+        // 调起应任务
+        (new $class)->{$method}($server, $data, $this->slavePool, $this->clientPool);
     }
 }

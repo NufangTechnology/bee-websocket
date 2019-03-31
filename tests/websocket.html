@@ -17,7 +17,7 @@
         // Create WebSocket connection.
         const socket = new WebSocket('ws://127.0.0.1:9512');
 
-        // Connection opened
+        // ClientPool opened
         socket.addEventListener('open', function (event) {
             socket.send('Hello Server!');
         });

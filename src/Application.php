@@ -2,6 +2,7 @@
 namespace Bee\Websocket;
 
 use Bee\Websocket\Middleware\Route;
+use Bee\Websocket\Task\RequestBroadcast;
 
 /**
  * 应用处理实例
@@ -93,13 +94,12 @@ class Application
 
     /**
      * 执行应用
-     *
-     * @return \Generator
      */
     public function handle()
     {
         $result = null;
 
+        // 执行中间件调用
         foreach ($this->meddlers as $middleware) {
             // 执行中间件业务
             $result = call_user_func($middleware, $this, $result);
@@ -110,6 +110,12 @@ class Application
             }
         }
 
-        return $this->context->getMessages();
+        // 投递请求异步发送消息
+        $this->server->task(
+            [
+                'class' => RequestBroadcast::class,
+                'data'  => $this->context->getMessages()
+            ]
+        );
     }
 }

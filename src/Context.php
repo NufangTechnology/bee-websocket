@@ -1,8 +1,6 @@
 <?php
 namespace Bee\Websocket;
 
-use Bee\Websocket\Slave\Message;
-
 /**
  * 上下文
  *
@@ -69,16 +67,14 @@ class Context
      */
     public function message(array $uuid, $data): void
     {
-        $this->messages[] = new Message($uuid, $data);
+        $this->messages[] = ['uuid' => $uuid, 'data' => $data];
     }
 
     /**
-     * @return \Generator
+     * @return array
      */
     public function getMessages()
     {
-        foreach ($this->messages as $item) {
-            yield $item;
-        }
+        return $this->messages;
     }
 }
