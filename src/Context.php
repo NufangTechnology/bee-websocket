@@ -72,7 +72,7 @@ class Context
      */
     public function get($key)
     {
-        return $this->data[$key];
+        return $this->data[$key] ?? null;
     }
 
     /**

@@ -57,6 +57,9 @@ abstract class Slave extends Server
         RouteDispatch::init($routeRules);
     }
 
+    /**
+     * 启动服务
+     */
     public function start()
     {
         if ($this->isRunning()) {
