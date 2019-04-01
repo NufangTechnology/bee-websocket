@@ -65,7 +65,7 @@ abstract class Slave extends Server
         // 这意味着所有通过主节点广播的消息必须在 tas 进程中进行
         if ($server->taskworker) {
             go(function () {
-                $this->bridge->connect();
+                $this->bridge->reconnect();
                 $this->bridge->receive();
             });
         }
