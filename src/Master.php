@@ -38,9 +38,6 @@ class Master extends Server
 
         // 传入服务启用配置进行示例化
         parent::__construct($runtime['master']);
-
-        $this->clientPool = new ClientPool;
-        $this->slavePool  = new SlavePool;
     }
 
     /**
@@ -52,6 +49,9 @@ class Master extends Server
             $this->output->warn("无效操作，服务已经在[{$this->host}:{$this->port}]运行！");
             return;
         }
+
+        $this->clientPool = new ClientPool;
+        $this->slavePool  = new SlavePool;
 
         // 设置进程名称
         swoole_set_process_name($this->name . ':master');
