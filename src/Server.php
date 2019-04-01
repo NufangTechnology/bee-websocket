@@ -33,31 +33,6 @@ abstract class Server extends HttpServer implements ServerInterface
     }
 
     /**
-     * Server启动在主进程的主线程回调此方法
-     *
-     * @param \Swoole\WebSocket\Server $server
-     */
-    public function onStart($server)
-    {
-        swoole_set_process_name($this->name . ':reactor');
-    }
-
-    /**
-     * 进程启动
-     *
-     * @param $server
-     * @param $workerId
-     */
-    public function onWorkerStart($server, $workerId)
-    {
-        if ($server->taskworker) {
-            swoole_set_process_name($this->name . ':task');
-        } else {
-            swoole_set_process_name($this->name . ':worker');
-        }
-    }
-
-    /**
      * 内部消化 http 请求
      * 如果相对外提供 http 能力，直接覆盖该方法即可
      *
