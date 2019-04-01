@@ -84,7 +84,9 @@ abstract class Slave extends Server
             $request->fd,
             [
                 'c' => '1,0', // 1,1 默认为身份鉴定路由地址（从0开始会路由转换异常）
-                'd' => $request->header['x-token'] ?? ''
+                'd' => [
+                    'token' => $request->header['x-token'] ?? ''
+                ]
             ]
         );
 
