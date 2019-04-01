@@ -56,7 +56,6 @@ abstract class Slave extends Server
      *
      * @param \Swoole\WebSocket\Server $server
      * @param int $workerId
-     * @throws Exception
      */
     public function onWorkerStart($server, $workerId)
     {
@@ -67,6 +66,7 @@ abstract class Slave extends Server
         if ($server->taskworker) {
             go(function () {
                 $this->bridge->connect();
+                $this->bridge->receive();
             });
         }
     }
