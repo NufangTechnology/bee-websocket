@@ -14,6 +14,11 @@ class Context
     protected $fd;
 
     /**
+     * @var string
+     */
+    protected $code;
+
+    /**
      * @var array
      */
     protected $data = [];
@@ -32,7 +37,8 @@ class Context
     public function __construct(int $fd, $data)
     {
         $this->fd   = $fd;
-        $this->data = $data;
+        $this->code = $data['c'] ?? '';
+        $this->data = $data['d'] ?? [];
     }
 
     /**
@@ -41,6 +47,14 @@ class Context
     public function getFd(): int
     {
         return $this->fd;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCode(): string
+    {
+        return $this->code;
     }
 
     /**
