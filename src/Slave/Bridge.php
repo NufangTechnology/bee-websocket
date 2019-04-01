@@ -169,4 +169,16 @@ class Bridge
             ]
         );
     }
+
+    /**
+     * 发主节点发送单播请求
+     *
+     * @param string $uuid
+     * @param string $data
+     * @throws Exception
+     */
+    public function unicast($uuid, string $data)
+    {
+        $this->broadcast([$uuid], $data);
+    }
 }

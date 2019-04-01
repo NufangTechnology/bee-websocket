@@ -24,21 +24,18 @@ class SendBroadcast extends MasterTask
      */
     public function handle(Server $server, array $params, SlavePool $slavePool, ClientPool $clientPool)
     {
-        print_r($params);
         $map = [];
 
         // 将相同自节点用户合并，减少消息通信量
         foreach ($params['u'] as $uuid) {
             // 获取客户端连接信息
             $client = $clientPool->get($uuid);
-            print_r($client);
             if (empty($client)) {
                 continue;
             }
 
             // 获取子节点连接信息
             $slave  = $slavePool->get($client['slave']);
-            print_r($slave);
             if (empty($slave)) {
                 continue;
             }
