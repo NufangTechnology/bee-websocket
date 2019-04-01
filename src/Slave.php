@@ -85,7 +85,7 @@ abstract class Slave extends Server
         $context = new Context(
             $request->fd,
             [
-                'c' => '1,0', // 1,1 默认为身份鉴定路由地址（从0开始会路由转换异常）
+                'c' => '1,1', // 1,1 默认为身份鉴定路由地址（从0开始会路由转换异常）
                 'd' => [
                     'token' => $request->header['x-token'] ?? ''
                 ]
