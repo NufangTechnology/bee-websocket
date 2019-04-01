@@ -111,7 +111,7 @@ class Bridge
 
             // 接收到的主节点数据为空，检查是否连接断开
             // 如果连接断开进行自动重连
-            if (empty($data) && !$this->client->isConnected()) {
+            if (empty($data)) {
                 $this->reconnect();
             } else {
                 call_user_func($this->callback, unserialize($data));
