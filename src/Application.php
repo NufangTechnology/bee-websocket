@@ -78,14 +78,6 @@ class Application
     }
 
     /**
-     * @return \Swoole\WebSocket\Server
-     */
-    public function getServer(): \Swoole\WebSocket\Server
-    {
-        return $this->server;
-    }
-
-    /**
      * 执行应用
      */
     public function handle()

@@ -158,7 +158,7 @@ class Bridge
      * @param string $data 带广播数据体
      * @throws Exception
      */
-    public function broadcast(array $target, string $data)
+    public function broadcast(array $target, $data)
     {
         $this->send(
             [
@@ -177,7 +177,7 @@ class Bridge
      * @param string $data
      * @throws Exception
      */
-    public function unicast($uuid, string $data)
+    public function unicast($uuid, $data)
     {
         $this->broadcast([$uuid], $data);
     }
