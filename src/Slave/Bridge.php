@@ -155,7 +155,7 @@ class Bridge
      * 向主节点发送广播请求
      *
      * @param array $target 连接对象集[uuid]
-     * @param string $data 带广播数据体
+     * @param mixed $data 带广播数据体
      * @throws Exception
      */
     public function broadcast(array $target, $data)
@@ -174,7 +174,7 @@ class Bridge
      * 发主节点发送单播请求
      *
      * @param string $uuid
-     * @param string $data
+     * @param mixed $data
      * @throws Exception
      */
     public function unicast($uuid, $data)
