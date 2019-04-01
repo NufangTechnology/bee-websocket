@@ -1,6 +1,7 @@
 <?php
 namespace Bee\Websocket;
 
+use Bee\Websocket\Slave\ClientPool;
 use Bee\Websocket\Task\PushMessage;
 use Bee\Websocket\Task\RequestBroadcast;
 use Bee\Websocket\Task\SendClientConnect;
@@ -20,6 +21,11 @@ abstract class Slave extends Server
      * @var Bridge
      */
     protected $bridge;
+
+    /**
+     * @var ClientPool
+     */
+    protected $clientPool;
 
     /**
      * Slave constructor.
@@ -49,6 +55,24 @@ abstract class Slave extends Server
         // 路由配置解析
         // 已经静态方式供组件全局访问
         RouteDispatch::init($routeRules);
+    }
+
+    public function start()
+    {
+        if ($this->isRunning()) {
+            $this->output->warn("无效操作，服务已经在[{$this->host}:{$this->port}]运行！");
+            return;
+        }
+
+        $this->clientPool = new ClientPool;
+
+        // 设置进程名称
+        swoole_set_process_name($this->name . ':master');
+        // 启动Http服务
+        $this->swoole = new \Swoole\WebSocket\Server($this->host, $this->port);
+        $this->swoole->set($this->option);
+        $this->registerCallback();
+        $this->swoole->start();
     }
 
     /**
@@ -107,6 +131,8 @@ abstract class Slave extends Server
             $server->close($request->fd);
         }
 
+        // 连接与用户映射
+        $this->clientPool->set($request->fd, $uuid);
         // 注册当前连接至至主节点
         $this->registerClientConnect([$uuid => $request->fd]);
     }
@@ -128,6 +154,10 @@ abstract class Slave extends Server
 
         // 初始化上下文，注入客户端数据
         $context = new Context($frame->fd, $data);
+
+        // 还原当前连接标识
+        $mapping = $this->clientPool->get($frame->fd);
+        $context->set('uuid', $mapping['u']);
 
         // 执行业务处理
         (new Application)
@@ -163,6 +193,18 @@ abstract class Slave extends Server
 
         // 调起应任务
         (new $class)->{$method}($server, $this->bridge, $data);
+    }
+
+    /**
+     * 客户端关闭连接时回调方法
+     *
+     * @param \Swoole\WebSocket\Server $server
+     * @param $fd
+     */
+    public function onClose($server, $fd)
+    {
+        // 删除映射
+        $this->clientPool->del($fd);
     }
 
     /**
