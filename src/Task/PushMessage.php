@@ -25,6 +25,12 @@ class PushMessage extends SlaveTask
         $data = json_encode($params['d']);
 
         foreach ($fds as $fd) {
+            // 连接不存在，跳过
+            // todo: 从映射移除
+            if ($server->exist($fd)) {
+                continue;
+            }
+
             $server->push($fd, $data);
         }
     }
