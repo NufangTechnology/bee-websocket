@@ -18,5 +18,5 @@ abstract class SlaveTask
      * @param Bridge $bridge
      * @param array $params
      */
-    abstract public function handle(Server $server, Bridge $bridge, array $params = []);
+    abstract public function handle(Server $server, $bridge, array $params = []);
 }
