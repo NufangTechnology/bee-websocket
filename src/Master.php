@@ -81,7 +81,10 @@ class Master extends Server
 
         // 替换子节点连接对象映射
         // 保证每次主节点向子节点发送消息时使用最后一次通信的连接
-        $this->slavePool->set($data['a'], $fd);
+        // 没有 a 参数表示子节点不支持接收能力
+        if (isset($data['a'])) {
+            $this->slavePool->set($data['a'], $fd);
+        }
 
         // 执行子节点请求业务
         switch ($data['c']) {
