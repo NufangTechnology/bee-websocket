@@ -26,7 +26,7 @@ class PushMessage extends SlaveTask
 
         foreach ($fds as $fd) {
             // 连接不存在，跳过，并从映射移除
-            if ($server->exist($fd)) {
+            if (!$server->exist($fd)) {
                 continue;
             }
 
