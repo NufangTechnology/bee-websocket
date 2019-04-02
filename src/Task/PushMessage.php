@@ -19,7 +19,7 @@ class PushMessage extends SlaveTask
      * @param Bridge $bridge
      * @param array $params
      */
-    public function handle(Server $server, Bridge $bridge, $params = [])
+    public function handle(Server $server, $bridge, $params = [])
     {
         $fds  = $params['f'];
         $data = json_encode($params['d']);

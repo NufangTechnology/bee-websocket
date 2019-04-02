@@ -20,7 +20,7 @@ class SendClientConnect extends SlaveTask
      * @param array $params
      * @throws \Bee\Websocket\Exception
      */
-    public function handle(Server $server, Bridge $bridge, array $params = [])
+    public function handle(Server $server, $bridge, array $params = [])
     {
         $bridge->register($params);
     }
